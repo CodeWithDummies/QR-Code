@@ -39,6 +39,7 @@
             color: #ffffff;
             cursor: pointer;
             transition: background-color 0.3s;
+            margin-bottom: 10px; /* Add margin for spacing */
         }
 
         button:hover {
@@ -68,6 +69,7 @@
         <h1>QR Code Generator</h1>
         <input type="text" id="qrInput" placeholder="Enter URL or text">
         <button id="generateBtn">Generate QR Code</button>
+        <button id="downloadBtn" style="display:none;">Download QR Code</button>
         <div id="qrCode" class="qr-code">
             <div class="qrcode-container" id="qrcodeContainer"></div>
         </div>
@@ -77,6 +79,9 @@
     <script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
     <script>
         document.getElementById('generateBtn').addEventListener('click', generateQRCode);
+        document.getElementById('downloadBtn').addEventListener('click', downloadQRCode);
+
+        let qrCodeImage; // Store QR code image data
 
         function generateQRCode() {
             const qrInput = document.getElementById('qrInput').value;
@@ -99,9 +104,26 @@
 
                 // Ensure the container has rounded edges
                 qrCodeContainer.style.borderRadius = '20px';
+
+                // Store the image data URL after generating the QR code
+                const qrCodeCanvas = qrCodeContainer.querySelector('canvas');
+                qrCodeImage = qrCodeCanvas.toDataURL('image/png'); // Get image data URL
+
+                // Show the download button
+                document.getElementById('downloadBtn').style.display = 'inline-block';
             } else {
                 alert("Please enter a valid URL or text!");
             }
+        }
+
+        function downloadQRCode() {
+            // Create a link element
+            const link = document.createElement('a');
+            link.href = qrCodeImage; // Set the link's href to the image data
+            link.download = 'qr_code.png'; // Set the file name
+            document.body.appendChild(link); // Append link to body
+            link.click(); // Trigger click to download
+            document.body.removeChild(link); // Remove link after download
         }
     </script>
 </body>
